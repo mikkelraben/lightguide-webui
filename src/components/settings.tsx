@@ -16,7 +16,6 @@ export default function SettingsPanel() {
   useEffect(() => {
     getSettingsDB("user123").then((fetchedSettings) => {
       __setSettings(fetchedSettings)
-      console.log((Math.floor(settings.timeLimit / 60)).toString().padStart(2, '0') + ":" + (settings.timeLimit % 60).toString().padStart(2, '0'))
     }).catch((error) => {
       console.error("Error fetching settings:", error)
     })
@@ -24,7 +23,11 @@ export default function SettingsPanel() {
 
 
   const setSettings = (newSettings: settingsType) => {
+    newSettings.timeLimit = Math.max(newSettings.timeLimit, 120)
+
     __setSettings(newSettings)
+    
+    console.log((Math.floor(settings.timeLimit / 3600)).toString().padStart(2, '0') + ":" + (Math.floor((settings.timeLimit / 60)%60)).toString().padStart(2, '0') + ":" + (settings.timeLimit % 60).toString().padStart(2, '0'))
     // Save settings to local storage or database
     setSettingsDB(newSettings, "user123")
   }
@@ -87,11 +90,16 @@ export default function SettingsPanel() {
             <input
               id="detection-time"
               type="time"
+              step={1}
               className="font-bold px-2 py-1 rounded border border-gray-300"
-              value={(Math.floor( settings.timeLimit/60)).toString().padStart(2, '0') + ":" + (settings.timeLimit % 60).toString().padStart(2, '0')}
+              min={"00:02:00"}
+              value={(Math.floor(settings.timeLimit / 3600)).toString().padStart(2, '0') + ":" + (Math.floor((settings.timeLimit / 60) % 60)).toString().padStart(2, '0') + ":" + (settings.timeLimit % 60).toString().padStart(2, '0')}
               onChange={e => {
-                const [minutes, seconds] = e.target.value.split(":").map(Number)
-                setSettings({ ...settings, timeLimit: minutes * 60 + seconds })
+                const [hours, minutes, seconds] = e.target.value.split(':').map(Number)
+                
+                const totalSeconds = hours * 3600 + minutes * 60 + seconds
+
+                setSettings({ ...settings, timeLimit: totalSeconds })
               }}
             />
           </div>
