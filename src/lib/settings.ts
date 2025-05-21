@@ -52,8 +52,8 @@ export async function getSettingsDB(user: string): Promise<settingsType> {
     return {
       state: false,
       timeLimit: 0,
-      colorWalk: [0, 0, 0],
-      colorAlarm: [0, 0, 0],
+      colorWalk: [0, 255, 0],
+      colorAlarm: [255, 0, 0],
       startTime: "00:00",
       endTime: "00:00",
     }
