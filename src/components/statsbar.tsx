@@ -1,5 +1,5 @@
 "use client"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Bar } from "react-chartjs-2"
 import {
   Chart as ChartJS,
@@ -10,21 +10,32 @@ import {
 } from "chart.js"
 import { Info } from "lucide-react"
 import Sidebar from "./sidebar"
+import { fetchMeasurements } from "@/lib/fetchMeasurements"
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip)
 
 export default function WeeklyStatsDashboard() {
-  const [data] = useState({
+  const [data, setData] = useState({
     labels: ["M", "Ti", "O", "To", "F", "L", "S"],
     datasets: [
       {
         label: "Activity",
-        data: [30, 70, 50, 90, 25, 65, 75],
+        data: [0, 0, 0, 0, 0, 0, 0],
         backgroundColor: "rgba(135, 206, 250, 0.8)", // Light blue
         borderRadius: 6,
       },
     ],
   })
+
+  // Fetch data from the database
+  useEffect(() => {
+    fetchMeasurements().then((fetchedData) => {
+      setData(fetchedData)
+    }).catch((error) => {
+      console.error("Error fetching data:", error)
+    })
+  }, [])
+
 
   return (
     <div className="flex h-screen bg-white font-serif">

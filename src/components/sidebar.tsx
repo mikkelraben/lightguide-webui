@@ -1,4 +1,4 @@
-import { BarChart2, Home, Settings } from "lucide-react"
+import { Home, Settings } from "lucide-react"
 import Link from "next/link"
 
 export default function Sidebar() {
@@ -7,7 +7,6 @@ export default function Sidebar() {
       <Link href={"/"}>
         <Home className="w-6 h-6 cursor-pointer" />
       </Link>
-      <BarChart2 className="w-6 h-6 cursor-pointer" />
       <div className="flex-grow" />
       <Link href="/settings">
         <Settings className="w-6 h-6 cursor-pointer" />
