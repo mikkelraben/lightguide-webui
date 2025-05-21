@@ -16,8 +16,6 @@ type settings = {
 export type settingsType = {
   state: boolean
   timeLimit: number
-  colorWalk: number[]
-  colorAlarm: number[]
   startTime: string
   endTime: string
 }
@@ -42,8 +40,6 @@ export async function getSettingsDB(user: string): Promise<settingsType> {
     return {
       state: settings.state,
       timeLimit: settings.timeLimit,
-      colorWalk: settings.colorWalk,
-      colorAlarm: settings.colorAlarm,
       startTime: settings.startTime,
       endTime: settings.endTime,
     }
@@ -52,8 +48,6 @@ export async function getSettingsDB(user: string): Promise<settingsType> {
     return {
       state: false,
       timeLimit: 0,
-      colorWalk: [0, 255, 0],
-      colorAlarm: [255, 0, 0],
       startTime: "00:00",
       endTime: "00:00",
     }
