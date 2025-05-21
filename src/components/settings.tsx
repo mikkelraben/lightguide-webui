@@ -1,12 +1,11 @@
 "use client"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import Sidebar from "./sidebar"
-import { setSettingsDB, settings } from "@/lib/settings"
+import { getSettingsDB, setSettingsDB, settingsType } from "@/lib/settings"
 
 export default function SettingsPanel() {
   const [settings, __setSettings] = useState({
     state: false,
-    user: "",
     timeLimit: 0,
     colorWalk: [0, 0, 0],
     colorAlarm: [0, 0, 0],
@@ -14,10 +13,20 @@ export default function SettingsPanel() {
     endTime: "00:00",
   })
 
-  const setSettings = (newSettings: settings) => {
+  useEffect(() => {
+    getSettingsDB("user123").then((fetchedSettings) => {
+      __setSettings(fetchedSettings)
+      console.log((Math.floor(settings.timeLimit / 60)).toString().padStart(2, '0') + ":" + (settings.timeLimit % 60).toString().padStart(2, '0'))
+    }).catch((error) => {
+      console.error("Error fetching settings:", error)
+    })
+  }, [])
+
+
+  const setSettings = (newSettings: settingsType) => {
     __setSettings(newSettings)
     // Save settings to local storage or database
-    setSettingsDB(newSettings)
+    setSettingsDB(newSettings, "user123")
   }
 
 
@@ -72,16 +81,6 @@ export default function SettingsPanel() {
             />
           </div>
 
-          <div className="flex items-center space-x-4">
-            <label htmlFor="emergency-contact">Emergency contact</label>
-            <input
-              id="emergency-contact"
-              type="tel"
-              className="font-bold px-2 py-1 rounded border border-gray-300"
-              value={settings.user}
-              onChange={e => setSettings({ ...settings, user: e.target.value })}
-            />
-          </div>
 
           <div className="flex items-center space-x-4">
             <label htmlFor="detection-time">Detection time</label>
@@ -89,53 +88,13 @@ export default function SettingsPanel() {
               id="detection-time"
               type="time"
               className="font-bold px-2 py-1 rounded border border-gray-300"
-              value={settings.timeLimit.toString().padStart(2, "0") + ":00"}
+              value={(Math.floor( settings.timeLimit/60)).toString().padStart(2, '0') + ":" + (settings.timeLimit % 60).toString().padStart(2, '0')}
               onChange={e => {
                 const [minutes, seconds] = e.target.value.split(":").map(Number)
                 setSettings({ ...settings, timeLimit: minutes * 60 + seconds })
               }}
             />
           </div>
-
-          <div className="flex items-center space-x-4">
-            <label htmlFor="turn-on-time">Turn on time</label>
-            <input
-              id="turn-on-time"
-              type="time"
-              className="font-bold px-2 py-1 rounded border border-gray-300"
-              defaultValue="21:00"
-            />
-          </div>
-          <div className="flex items-center space-x-4">
-            <label htmlFor="turn-on-time">Turn off time</label>
-            <input
-              id="turn-on-time"
-              type="time"
-              className="font-bold px-2 py-1 rounded border border-gray-300"
-              defaultValue="21:00"
-            />
-          </div>
-
-          <div className="flex items-center space-x-4">
-            <label htmlFor="emergency-contact">Emergency contact</label>
-            <input
-              id="emergency-contact"
-              type="tel"
-              className="font-bold px-2 py-1 rounded border border-gray-300"
-              defaultValue="1-800-555-8831"
-            />
-          </div>
-
-          <div className="flex items-center space-x-4">
-            <label htmlFor="turn-on-time">Detection time</label>
-            <input
-              id="turn-on-time"
-              type="time"
-              className="font-bold px-2 py-1 rounded border border-gray-300"
-              defaultValue="05:00"
-            />
-          </div>
-
         </div>
       </div>
     </div>

@@ -1,3 +1,4 @@
+"use server"
 import client from "./database"
 
 export async function fetchMeasurements(): Promise<{ labels: string[], datasets: { label: string, data: number[], backgroundColor: string, borderRadius: number }[] } > {
